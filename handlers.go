@@ -20,8 +20,9 @@ func TransactionHandler(w http.ResponseWriter, r *http.Request) {
 		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 		}
-		if err := db.Create(&req).Error; err != nil {
-			http.Error(w, "colud not save transaction", http.StatusInternalServerError)
+		err := NewTransaction(req.Transaction_type, req.Category, req.Description, req.Amount)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 		w.WriteHeader(http.StatusNoContent)
 	}

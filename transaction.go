@@ -1,11 +1,7 @@
 package main
 
 import (
-	"bufio"
 	"errors"
-	"fmt"
-	"math"
-	"strings"
 	"time"
 )
 
@@ -18,7 +14,7 @@ type Transaction struct {
 	Date             string
 }
 
-func NewTransaction(transaction_type, category, description string, amount float64) (Transaction, error) {
+func NewTransaction(transaction_type, category, description string, amount float64) error {
 	transaction := Transaction{
 		Transaction_type: transaction_type,
 		Amount:           amount,
@@ -27,35 +23,9 @@ func NewTransaction(transaction_type, category, description string, amount float
 		Date:             time.Now().Format(time.DateTime),
 	}
 	if err := db.Create(&transaction).Error; err != nil {
-		return transaction, errors.New("transaction created fail")
+		return errors.New("transaction created fail")
 	}
-	return transaction, nil
-}
-
-func UserCreateTransaction(all_transaction []Transaction, idCounter *int, reader *bufio.Reader) ([]Transaction, error) {
-	//id := *idCounter
-	fmt.Println("Введите тип операции")
-	transaction_type, _ := reader.ReadString('\n')
-	transaction_type = strings.TrimSpace(transaction_type)
-	if transaction_type == "Доход" || transaction_type == "Расход" {
-		fmt.Println("Введите категорию")
-		category, _ := reader.ReadString('\n')
-		category = strings.TrimSpace(category)
-		fmt.Println("Введите описание операции")
-		description, _ := reader.ReadString('\n')
-		description = strings.TrimSpace(description)
-		fmt.Println("Введите сумму операции")
-		var amount float64
-		fmt.Scan(&amount)
-		if amount <= 0 {
-			return all_transaction, errors.New("Введена некорректная сумма операции\n")
-		}
-		transaction, _ := NewTransaction(transaction_type, category, description, math.Abs(amount))
-		all_transaction = append(all_transaction, transaction)
-		*idCounter++
-		return all_transaction, nil
-	}
-	return all_transaction, errors.New("Введен некорректный тип операции, попробуйте снова\n")
+	return nil
 }
 
 func remove(id int, all_transactiom []Transaction) ([]Transaction, error) {
