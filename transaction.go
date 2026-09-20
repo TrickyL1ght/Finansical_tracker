@@ -18,15 +18,15 @@ type Transaction struct {
 	Date             string
 }
 
-func NewTransaction(transaction_type, category, description, date string, amount float64) (Transaction, error) {
+func NewTransaction(transaction_type, category, description string, amount float64) (Transaction, error) {
 	transaction := Transaction{
 		Transaction_type: transaction_type,
 		Amount:           amount,
 		Category:         category,
 		Description:      description,
-		Date:             date,
+		Date:             time.Now().Format(time.DateTime),
 	}
-	if err := db.Create(transaction).Error; err != nil {
+	if err := db.Create(&transaction).Error; err != nil {
 		return transaction, errors.New("transaction created fail")
 	}
 	return transaction, nil
@@ -50,7 +50,7 @@ func UserCreateTransaction(all_transaction []Transaction, idCounter *int, reader
 		if amount <= 0 {
 			return all_transaction, errors.New("Введена некорректная сумма операции\n")
 		}
-		transaction, _ := NewTransaction(transaction_type, category, description, time.Now().Format(time.DateTime), math.Abs(amount))
+		transaction, _ := NewTransaction(transaction_type, category, description, math.Abs(amount))
 		all_transaction = append(all_transaction, transaction)
 		*idCounter++
 		return all_transaction, nil

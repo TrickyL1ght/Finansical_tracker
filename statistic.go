@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"time"
 )
@@ -17,15 +18,15 @@ func calculateBalance(all_transaction []Transaction) {
 	fmt.Printf("Ваш баланс составляет:%.2f\n\n", balance)
 }
 
-func selectAllTransaction(all_transaction []Transaction) {
-	if len(all_transaction) == 0 {
-		fmt.Printf("Операции не найдены\n")
-		return
+func SelectAllTransaction() ([]Transaction, error) {
+	var allTransactions []Transaction
+	if err := db.Find(&allTransactions).Error; err != nil {
+		return nil, err
 	}
-	for _, transaction := range all_transaction {
-		fmt.Printf("Операция №%d\nСумма:%.2f\nТип операции:%s\nОписание:%s\nКатегория:%s\nДата:%s\n\n",
-			transaction.Id, transaction.Amount, transaction.Transaction_type, transaction.Description, transaction.Category, transaction.Date)
+	if len(allTransactions) == 0 {
+		return nil, errors.New("Transaction not found")
 	}
+	return allTransactions, nil
 }
 
 func SelectTransactionOfType(all_transaction []Transaction, transaction_type string) {

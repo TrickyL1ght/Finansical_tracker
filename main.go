@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"log"
+	"net/http"
 	"os"
 	"strings"
 
@@ -16,7 +17,7 @@ var db *gorm.DB
 func initDB() {
 	dsn := "host=127.0.0.1 user=postgres password=HomePass dbname=ftdb port=5432 sslmode=disable"
 	var err error
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	db, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		log.Fatalf("could not init DB: %v", err)
 	}
@@ -28,13 +29,8 @@ func initDB() {
 
 func main() {
 	initDB()
-
-	a := Transaction{
-		1, "Доход", 10000, "ЗП", "Аванс", "2026-08-13 12:45:20",
-	}
-	if err := db.Create(&a).Error; err != nil {
-		fmt.Errorf("Error: %s", err)
-	}
+	http.HandleFunc("/transaction", TransactionHandler)
+	http.ListenAndServe(":8080", nil)
 	all_transaction := []Transaction{}
 	idCounter := 2 //Уменьшить каунтер до 1, если не будет тестовых операций
 	reader := bufio.NewReader(os.Stdin)
@@ -66,7 +62,7 @@ func main() {
 			userChoise = strings.TrimSpace(userChoise)
 			switch userChoise {
 			case "1":
-				selectAllTransaction(all_transaction)
+				SelectAllTransaction()
 			case "2":
 				SelectTransactionOfType(all_transaction, "Доход")
 			case "3":
