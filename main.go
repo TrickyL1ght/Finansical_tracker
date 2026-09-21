@@ -26,7 +26,8 @@ func initDB() {
 func main() {
 	initDB()
 
-	http.HandleFunc("/transaction", TransactionHandler)
+	http.HandleFunc("/api/transaction", TransactionHandler)
+	http.HandleFunc("/api/transaction/:tranasationId", EditTransactionHandler)
 
 	http.ListenAndServe(":8080", nil)
 }

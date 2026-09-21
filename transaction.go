@@ -6,12 +6,12 @@ import (
 )
 
 type Transaction struct {
-	Id               int `gorm:"primary_key"`
-	Transaction_type string
-	Amount           float64
-	Category         string
-	Description      string
-	Date             string
+	Id               int     `gorm:"primary_key"`
+	Transaction_type string  `json:"type"`
+	Amount           float64 `json:"amount"`
+	Category         string  `json:"category"`
+	Description      string  `json:"description"`
+	Date             string  `json:"date"`
 }
 
 func NewTransaction(transaction_type, category, description string, amount float64) error {
