@@ -18,6 +18,7 @@ func CreateTransactionHandler(c *gin.Context) {
 	var transaction Transaction
 	if err := c.ShouldBindJSON(&transaction); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
 	}
 
 	if err := NewTransaction(transaction.Transaction_type,
@@ -25,6 +26,7 @@ func CreateTransactionHandler(c *gin.Context) {
 		transaction.Description,
 		transaction.Amount); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
 	}
 	c.JSON(http.StatusNoContent, gin.H{})
 }
