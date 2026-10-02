@@ -3,7 +3,6 @@ package main
 import (
 	"errors"
 	"fmt"
-	"time"
 )
 
 func calculateBalance(all_transaction []Transaction) {
@@ -27,6 +26,14 @@ func SelectAllTransaction() ([]Transaction, error) {
 		return nil, errors.New("Transaction not found")
 	}
 	return allTransactions, nil
+}
+
+func SelectTransactionById(id int) (Transaction, error) {
+	var transaction Transaction
+	if err := db.First(&transaction, id).Error; err != nil {
+		return Transaction{}, errors.New("Transaction not found")
+	}
+	return transaction, nil
 }
 
 func SelectTransactionOfType(all_transaction []Transaction, transaction_type string) {
@@ -62,13 +69,5 @@ func StatisticByCategory(all_transaction []Transaction) {
 	}
 	for key, value := range stat {
 		fmt.Printf("Категория:%s - %.2f руб.", key, value)
-	}
-}
-
-func TimeBasedOperations(userChoise string, all_transaction []Transaction) {
-	for _, transaction := range all_transaction {
-		a, _ := time.Parse(time.DateTime, transaction.Date)
-		fmt.Println(a)
-		fmt.Printf("%T\n", a)
 	}
 }

@@ -35,5 +35,6 @@ func main() {
 
 	router.GET("/api/transaction", GetTransactionHandler)
 	router.POST("/api/transaction", CreateTransactionHandler)
+	router.GET("/api/transaction/:id", GetTransactionByIdHandler)
 	router.Run(":8080")
 }

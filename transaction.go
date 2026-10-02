@@ -11,16 +11,19 @@ type Transaction struct {
 	Amount           float64 `json:"amount" binding:"required,gt=0"`
 	Category         string  `json:"category" binding:"required"`
 	Description      string  `json:"description"`
-	Date             string  `json:"date"`
+	Date             int64   `json:"date" binding:"max=2147483647"`
 }
 
-func NewTransaction(transaction_type, category, description string, amount float64) error {
+func NewTransaction(transaction_type, category, description string, amount float64, date int64) error {
 	transaction := Transaction{
 		Transaction_type: transaction_type,
 		Amount:           amount,
 		Category:         category,
 		Description:      description,
-		Date:             time.Now().Format(time.DateTime),
+		Date:             date,
+	}
+	if date == 0 {
+		transaction.Date = time.Now().Unix()
 	}
 	if err := db.Create(&transaction).Error; err != nil {
 		return errors.New("transaction created fail")
