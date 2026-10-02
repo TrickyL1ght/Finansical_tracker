@@ -2,8 +2,9 @@ package main
 
 import (
 	"log"
-	"net/http"
 
+	"github.com/gin-contrib/cors"
+	"github.com/gin-gonic/gin"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -25,9 +26,14 @@ func initDB() {
 
 func main() {
 	initDB()
+	router := gin.Default()
+	router.Use(cors.New(cors.Config{
+		AllowOrigins: []string{"https://finansicaltracker.framer.website"},
+		AllowMethods: []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowHeaders: []string{"Content-Type", "User-Agent", "Sec-Ch-Ua-Platform", "Sec-Ch-Ua-Mobile", "Sec-Ch-Ua", "sec-fetch-site", "sec-fetch-mode", "sec-fetch-dest", "origin", "host", "connection", "accept-language", "accept-encoding", "accept"},
+	}))
 
-	http.HandleFunc("/api/transaction", TransactionHandler)
-	http.HandleFunc("/api/transaction/:tranasationId", EditTransactionHandler)
-
-	http.ListenAndServe(":8080", nil)
+	router.GET("/api/transaction", GetTransactionHandler)
+	router.POST("/api/transaction", CreateTransactionHandler)
+	router.Run(":8080")
 }
