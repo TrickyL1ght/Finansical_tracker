@@ -89,3 +89,19 @@ func EditTransactionHandler(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"data": transaction})
 }
+
+func DeleteTransactionHandler(c *gin.Context) {
+
+	transactionId, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Transaction type must be int"})
+		return
+	}
+
+	if err := db.Delete(&Transaction{}, transactionId).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete the transaction"})
+		return
+	}
+
+	c.JSON(http.StatusNoContent, gin.H{})
+}

@@ -20,7 +20,7 @@ func initDB() {
 		os.Getenv("DB_USER"),
 		os.Getenv("DB_PASSWORD"),
 		os.Getenv("DB_NAME"),
-		os.Getenv("DB_HOST"),
+		os.Getenv("DB_PORT"),
 		os.Getenv("DB_SSL_MODE"),
 	)
 
@@ -54,6 +54,7 @@ func main() {
 	router.POST("/api/transaction", CreateTransactionHandler)
 	router.GET("/api/transaction/:id", GetTransactionByIdHandler)
 	router.PUT("/api/transaction/:id", EditTransactionHandler)
+	router.DELETE("/api/transaction/:id", DeleteTransactionHandler)
 
 	router.Run(":8080")
 }
