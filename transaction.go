@@ -30,20 +30,3 @@ func NewTransaction(transaction_type, category, description string, amount float
 	}
 	return nil
 }
-
-func remove(id int, all_transactiom []Transaction) ([]Transaction, error) {
-	if len(all_transactiom) == 0 || len(all_transactiom) < id {
-		return all_transactiom, errors.New("Введен некорректный Id операции, попробуйте снова\n")
-	}
-	i := 0
-	for idx, transaction := range all_transactiom {
-		if transaction.Id != id {
-			all_transactiom[i] = all_transactiom[idx]
-			i++
-		}
-	}
-	if id == len(all_transactiom) {
-		return all_transactiom, errors.New("Введен некорректный Id операции, попробуйте снова\n")
-	}
-	return all_transactiom[:i], nil
-}
