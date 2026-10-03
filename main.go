@@ -28,7 +28,7 @@ func main() {
 	initDB()
 	router := gin.Default()
 	router.Use(cors.New(cors.Config{
-		AllowOrigins: []string{"https://finansicaltracker.framer.website"},
+		AllowOrigins: []string{"https://finansicaltracker.framer.website", "http://localhost:5173"},
 		AllowMethods: []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 		AllowHeaders: []string{"Content-Type", "User-Agent", "Sec-Ch-Ua-Platform", "Sec-Ch-Ua-Mobile", "Sec-Ch-Ua", "sec-fetch-site", "sec-fetch-mode", "sec-fetch-dest", "origin", "host", "connection", "accept-language", "accept-encoding", "accept"},
 	}))
@@ -36,5 +36,7 @@ func main() {
 	router.GET("/api/transaction", GetTransactionHandler)
 	router.POST("/api/transaction", CreateTransactionHandler)
 	router.GET("/api/transaction/:id", GetTransactionByIdHandler)
+	router.PUT("/api/transaction/:id", EditTransactionHandler)
+
 	router.Run(":8080")
 }
