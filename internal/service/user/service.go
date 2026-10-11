@@ -3,15 +3,16 @@ package user
 import (
 	"crypto/sha1"
 	"fmt"
+	"os"
 	"time"
 
 	"github.com/golang-jwt/jwt"
 )
 
 const (
-	salt       = "svbkl151vlkslkvnscs238"
+	salt       = os.Getenv("SALT")
 	tokenTTL   = 12 * time.Hour
-	signingKey = "vuher892fsuc"
+	signingKey = os.Getenv("SIGNING_KEY")
 )
 
 type UserService interface {
