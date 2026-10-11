@@ -1,22 +1,14 @@
 package handlers
 
 import (
-	"awesomeProject/internal/service/transaction"
+	"awesomeProject/internal/model"
 	"net/http"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
 
-type TransactionHandler struct {
-	service transaction.TransactionService
-}
-
-func NewTransactionHandler(service transaction.TransactionService) *TransactionHandler {
-	return &TransactionHandler{service}
-}
-
-func (h *TransactionHandler) GetAllTransaction(c *gin.Context) {
+func (h *Handler) GetAllTransaction(c *gin.Context) {
 	allTransaction, err := h.service.GetAllTransaction()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -24,8 +16,8 @@ func (h *TransactionHandler) GetAllTransaction(c *gin.Context) {
 	c.JSON(http.StatusOK, allTransaction)
 }
 
-func (h *TransactionHandler) CreateTransaction(c *gin.Context) {
-	var request transaction.Transaction
+func (h *Handler) CreateTransaction(c *gin.Context) {
+	var request model.Transaction
 	if err := c.ShouldBindJSON(&request); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -40,7 +32,7 @@ func (h *TransactionHandler) CreateTransaction(c *gin.Context) {
 	c.JSON(http.StatusOK, transaction)
 }
 
-func (h *TransactionHandler) GetTransactionById(c *gin.Context) {
+func (h *Handler) GetTransactionById(c *gin.Context) {
 
 	transactionId, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
@@ -57,9 +49,9 @@ func (h *TransactionHandler) GetTransactionById(c *gin.Context) {
 	c.JSON(http.StatusOK, transaction)
 }
 
-func (h *TransactionHandler) UpdateTransaction(c *gin.Context) {
+func (h *Handler) UpdateTransaction(c *gin.Context) {
 
-	var request transaction.Transaction
+	var request model.Transaction
 	if err := c.ShouldBindJSON(&request); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -82,7 +74,7 @@ func (h *TransactionHandler) UpdateTransaction(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"data": transaction})
 }
 
-func (h *TransactionHandler) DeleteTransaction(c *gin.Context) {
+func (h *Handler) DeleteTransaction(c *gin.Context) {
 
 	transactionId, err := strconv.Atoi(c.Param("id"))
 	if err != nil {

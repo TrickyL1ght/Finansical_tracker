@@ -1,6 +1,8 @@
-package user
+package service
 
 import (
+	"awesomeProject/internal/model"
+	"awesomeProject/internal/repository"
 	"crypto/sha1"
 	"fmt"
 	"os"
@@ -10,19 +12,11 @@ import (
 )
 
 const (
-	salt       = os.Getenv("SALT")
-	tokenTTL   = 12 * time.Hour
-	signingKey = os.Getenv("SIGNING_KEY")
+	tokenTTL = 8 * time.Hour
 )
 
-type UserService interface {
-	CreateUser(user User) error
-	UserAuth(login, password string) (string, error)
-	ParseToken(accessToken string) (int, error)
-}
-
-type service struct {
-	repository UserRepository
+type UserService struct {
+	repository repository.Repository
 }
 
 type tokenClaims struct {
@@ -30,23 +24,23 @@ type tokenClaims struct {
 	UserId int `json:"user_id"`
 }
 
-func NewUserService(repository UserRepository) UserService {
-	return &service{repository}
+func NewUserService(repository repository.Repository) *UserService {
+	return &UserService{repository}
 }
 
-func (s *service) CreateUser(user User) error {
+func (s *UserService) CreateUser(user model.User) error {
 	user.Password = s.GeneratePasswordHash(user.Password)
 	return s.repository.CrateUser(user)
 }
 
-func (s *service) GeneratePasswordHash(password string) string {
+func (s *UserService) GeneratePasswordHash(password string) string {
 	hash := sha1.New()
 	hash.Write([]byte(password))
 
-	return fmt.Sprintf("%x", hash.Sum([]byte(salt)))
+	return fmt.Sprintf("%x", hash.Sum([]byte(os.Getenv("SALT"))))
 }
 
-func (s *service) UserAuth(login, password string) (string, error) {
+func (s *UserService) UserAuth(login, password string) (string, error) {
 	user, err := s.repository.GetUser(login, s.GeneratePasswordHash(password))
 	if err != nil {
 		return "", err
@@ -57,15 +51,15 @@ func (s *service) UserAuth(login, password string) (string, error) {
 		IssuedAt:  time.Now().Unix(),
 	}, user.Id})
 
-	return token.SignedString([]byte(signingKey))
+	return token.SignedString([]byte(os.Getenv("SIGNING_KEY")))
 }
 
-func (s *service) ParseToken(accessToken string) (int, error) {
+func (s *UserService) ParseToken(accessToken string) (int, error) {
 	token, err := jwt.ParseWithClaims(accessToken, &tokenClaims{}, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
 		}
-		return []byte(signingKey), nil
+		return []byte(os.Getenv("SIGNING_KEY")), nil
 	})
 	if err != nil {
 		return 0, err

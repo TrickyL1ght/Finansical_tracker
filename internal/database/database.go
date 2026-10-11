@@ -1,8 +1,7 @@
 package database
 
 import (
-	"awesomeProject/internal/service/transaction"
-	"awesomeProject/internal/service/user"
+	"awesomeProject/internal/model"
 	"fmt"
 	"log"
 	"os"
@@ -35,10 +34,10 @@ func InitDB() (*gorm.DB, error) {
 		log.Fatalf("could not init DB: %v", err)
 	}
 
-	if err = db.AutoMigrate(&transaction.Transaction{}); err != nil {
+	if err = db.AutoMigrate(&model.Transaction{}); err != nil {
 		log.Fatalf("could not migrate DB: %v", err)
 	}
-	if err = db.AutoMigrate(&user.User{}); err != nil {
+	if err = db.AutoMigrate(&model.User{}); err != nil {
 		log.Fatalf("could not migrate DB: %v", err)
 	}
 

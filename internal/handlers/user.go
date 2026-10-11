@@ -1,22 +1,14 @@
 package handlers
 
 import (
-	"awesomeProject/internal/service/user"
+	"awesomeProject/internal/model"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
 
-type UserHandler struct {
-	service user.UserService
-}
-
-func NewUserHandler(service user.UserService) *UserHandler {
-	return &UserHandler{service: service}
-}
-
-func (h *UserHandler) CreateUser(c *gin.Context) {
-	var request user.User
+func (h *Handler) CreateUser(c *gin.Context) {
+	var request model.User
 	if err := c.ShouldBindJSON(&request); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -30,8 +22,8 @@ func (h *UserHandler) CreateUser(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "User created successfully"})
 }
 
-func (h *UserHandler) UserAuth(c *gin.Context) {
-	var request user.AuthorisationRequest
+func (h *Handler) UserAuth(c *gin.Context) {
+	var request model.AuthorisationRequest
 	if err := c.ShouldBindJSON(&request); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
