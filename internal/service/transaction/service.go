@@ -35,6 +35,11 @@ func (s *transactionService) GetAllTransaction() ([]Transaction, error) {
 }
 
 func (s *transactionService) CreateTransaction(transaction Transaction) (Transaction, error) {
+	
+	if transaction.Date == 0 {
+		transaction.Date = time.Now().Unix()
+	}
+
 	return s.repository.CreateTransaction(transaction)
 }
 

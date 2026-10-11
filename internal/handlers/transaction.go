@@ -37,7 +37,7 @@ func (h *TransactionHandler) CreateTransaction(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusNoContent, transaction)
+	c.JSON(http.StatusOK, transaction)
 }
 
 func (h *TransactionHandler) GetTransactionById(c *gin.Context) {
