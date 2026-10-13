@@ -15,9 +15,9 @@ func NewTransactionGORM(db *gorm.DB) *TransactionGORM {
 	return &TransactionGORM{db: db}
 }
 
-func (r *TransactionGORM) GetAllTransaction() ([]model.Transaction, error) {
+func (r *TransactionGORM) GetAllTransaction(userId int) ([]model.Transaction, error) {
 	var allTransactions []model.Transaction
-	if err := r.db.Find(&allTransactions).Error; err != nil {
+	if err := r.db.Where("user_id=?", userId).Find(&allTransactions).Error; err != nil {
 		return nil, err
 	}
 	return allTransactions, nil

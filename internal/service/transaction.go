@@ -15,8 +15,8 @@ func NewTransactionService(repository repository.Repository) *TransactionService
 	return &TransactionService{repository: repository}
 }
 
-func (s *TransactionService) GetAllTransaction() ([]model.Transaction, error) {
-	transactions, err := s.repository.GetAllTransaction()
+func (s *TransactionService) GetAllTransaction(userId int) ([]model.Transaction, error) {
+	transactions, err := s.repository.GetAllTransaction(userId)
 	if err != nil {
 		return nil, err
 	}

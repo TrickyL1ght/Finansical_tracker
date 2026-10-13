@@ -7,4 +7,5 @@ type Transaction struct {
 	Category         string  `json:"category" binding:"required"`
 	Description      string  `json:"description"`
 	Date             int64   `json:"date" binding:"max=2147483647"`
+	UserId           int     `json:"userId"`
 }

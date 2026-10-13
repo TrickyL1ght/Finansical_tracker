@@ -12,7 +12,7 @@ type Repository struct {
 }
 
 type TransactionRepository interface {
-	GetAllTransaction() ([]model.Transaction, error)
+	GetAllTransaction(userId int) ([]model.Transaction, error)
 	CreateTransaction(transaction model.Transaction) (model.Transaction, error)
 	UpdateTransaction(transaction model.Transaction) (model.Transaction, error)
 	DeleteTransaction(id int) error

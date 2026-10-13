@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"net/http"
 	"strings"
 
@@ -30,4 +31,16 @@ func (h *Handler) UserIdentity(c *gin.Context) {
 	}
 
 	c.Set(userCtx, userId)
+}
+
+func (h *Handler) GetUserIdFromToken(c *gin.Context) (int, error) {
+	userId, ok := c.Get("user_id")
+	if !ok {
+		return 0, fmt.Errorf("key not found")
+	}
+	id, ok := userId.(int)
+	if !ok {
+		return 0, fmt.Errorf("key not int")
+	}
+	return id, nil
 }

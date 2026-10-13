@@ -9,7 +9,13 @@ import (
 )
 
 func (h *Handler) GetAllTransaction(c *gin.Context) {
-	allTransaction, err := h.service.GetAllTransaction()
+	userId, err := h.GetUserIdFromToken(c)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	allTransaction, err := h.service.GetAllTransaction(userId)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 	}
@@ -22,6 +28,13 @@ func (h *Handler) CreateTransaction(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+	userId, err := h.GetUserIdFromToken(c)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	request.UserId = userId
 
 	transaction, err := h.service.CreateTransaction(request)
 	if err != nil {
@@ -33,7 +46,7 @@ func (h *Handler) CreateTransaction(c *gin.Context) {
 }
 
 func (h *Handler) GetTransactionById(c *gin.Context) {
-
+	
 	transactionId, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Transaction type must be int"})
